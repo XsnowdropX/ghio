@@ -3,6 +3,29 @@
 #include <sys/stat.h>
 #include <string.h>
 
+int fileLines(char* file_path)
+{
+    FILE *file = fopen(file_path,"r");
+
+    if(file == NULL){
+        printf("Error opening file or %s doesn't exist\n", file_path);
+        return 0;
+    }
+
+    int lines=0;
+    char c;
+    while((c=getc(file))!=EOF)
+    {
+        if(c=='\n')
+        {
+            lines++;
+            c=getc(file);
+        }
+    }
+
+    return lines+1;
+}
+
 int main(int argc, char* argv[])
 {
     int x;
@@ -19,6 +42,7 @@ int main(int argc, char* argv[])
 
     for(int i=1;i<argc;i++)
     {
+        printf("Input name: %s\n", argv[i]);
         stat(argv[i], &st);
 
         pid1=fork();
@@ -28,13 +52,19 @@ int main(int argc, char* argv[])
             {
                 case __S_IFREG:
                 {
-                    printf("Regular file\n");
+                    printf("Input type: Regular file\n");
                     if(strstr(argv[i],".c"))
+                    {
                         system("sh script.sh");
+                    }
                     else
                     {
-                        printf("working on file lines\n");
+                        printf("Number of lines in %s is: %d\n", argv[i], fileLines(argv[i]));
                     }
+                    break;
+
+                    default:
+                    printf("Wrong file format or file doesn't exist\n");
                     break;
                 }
             }
