@@ -115,5 +115,12 @@ int main(int argc, char* argv[])
         wait(&x);
     }
 
+    int status1 = waitpid(pid1, &status1, 0);
+    int es1 = WEXITSTATUS(status1);
+    printf("The process with PID %d has ended with the exit code %d\n", pid1, es1);
+    int status2 = waitpid(pid2, &status2, 0);
+    int es2 = WEXITSTATUS(status2);
+    printf("The process with PID %d has ended with the exit code %d\n", pid2, es2);
+
     return 0;
 }
