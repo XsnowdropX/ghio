@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <string.h>
-#include <dirent.h>
 #include <fcntl.h>
 
 int fileLines(char* file_path)
@@ -80,6 +79,13 @@ int main(int argc, char* argv[])
                     {
                         printf("Number of lines in '%s' is: %d\n", argv[i], fileLines(argv[i]));
                     }
+                    break;
+                }
+
+                case __S_IFLNK:
+                {
+                    printf("Input type: Symbolic link\n");
+                    chmod(argv[i],760);
                     break;
                 }
 
