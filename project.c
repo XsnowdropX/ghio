@@ -55,7 +55,6 @@ void createSymLink(char *file_path)
     char link[20];
     printf("Please input the name of the symbolic link file: ");
     scanf("%s",link);
-    //printf("%s",symName);
 
     if(!symlink(file_path, link)){
         printf("Symbolic link created successfuly\n");
@@ -88,7 +87,7 @@ void menuFile(char *input)
             break;
 
         case 'd':
-            printf("Size: %ld\n",st.st_size);
+            printf("Size: %ld bytes\n",st.st_size);
             break;
 
         case 'h':
@@ -110,7 +109,7 @@ void menuFile(char *input)
             break;
 
         default:
-            printf("Input %c does not exist, please try again:\n", options[i]);
+            printf("Input '%c' does not exist, please try again:\n", options[i]);
             menuFile(input);
             out=1;
             break;
@@ -118,6 +117,52 @@ void menuFile(char *input)
 
         if(out==1)
         {
+            break;
+        }
+    }
+}
+
+void menuDir(char* input)
+{
+    char *options = malloc(10*sizeof(char));
+    printf("Directory options menu:\n");
+    printf(" (-n) name \n (-d) size \n (-a) access rights \n (-c) total number of files with the .c extension\n");
+    printf("Please input your options, preceded by the '-' sign: ");
+    scanf("%s",options);
+
+    struct stat st;
+    stat(input, &st);
+
+    for(int i=1; i<strlen(options); i++)
+    {
+        int out=0;
+        switch (options[i])
+        {
+        case 'n':
+            printf("Name: %s\n",input);
+            break;
+
+        case 'd':
+            printf("Size: %ld bytes\n",st.st_size);
+            break;
+        
+        case 'a':
+            printf("Access rights:\n");
+            accRights(st.st_mode);
+            break;
+
+        case 'c':
+            printf("working on .c file count\n");
+            break;
+
+        default:
+            printf("Input '%c' does not exist, please try again:\n",options[i]);
+            menuDir(input);
+            out=1;
+            break;
+        }
+
+        if(out==1){
             break;
         }
     }
@@ -237,7 +282,7 @@ int main(int argc, char* argv[])
 
                 case __S_IFDIR:
                     printf("Input type: Directory\n");
-                    //menuDir(argv[i]);
+                    menuDir(argv[i]);
                     break;
 
                 case __S_IFLNK:
