@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -195,6 +196,56 @@ void menuDir(char* input)
     }
 }
 
+void menuSymLink(char* input)
+{
+    char *options = malloc(10*sizeof(char));
+    printf("Symbolic link options menu:\n");
+    printf(" (-n) name \n (-l) delete symbolic link \n (-d) size of symbolic link \n (-t) size of target file \n (-a) access rights \n");
+    printf("Please input your options, preceded by the '-' sign: ");
+    scanf("%s",options);
+
+    struct stat st;
+    stat(input, &st);
+    int x;
+    x = lstat(input, &st);
+
+    for(int i=1; i<strlen(options); i++){
+        int out=0;
+        switch (options[i])
+        {
+        case 'n':
+            printf("Name: %s\n",input);
+            break;
+
+        case 'l':
+            printf("working on delete link function\n");
+            break;
+
+        case 'd':
+            printf("Size: %ld bytes\n",st.st_size);
+            break;
+
+        case 't':
+            printf("working on target file function\n");
+            break;
+        
+        case 'a':
+            accRights(st.st_mode);
+            break;
+
+        default:
+            printf("Input '%c' does not exist, please try again:\n",options[i]);
+            menuDir(input);
+            out=1;
+            break;
+        }
+
+        if(out==1){
+            break;
+        }
+    }
+}
+
 int fileLines(char* file_path)
 {
     FILE *file = fopen(file_path,"r");
@@ -238,8 +289,6 @@ void createFile(char* dir_path)
 
 int main(int argc, char* argv[])
 {
-    int x;
-
     if(argc==1)
     {
         printf("Please provide files/directories/links as arguments\n");
@@ -249,11 +298,12 @@ int main(int argc, char* argv[])
     int pid1, pid2;
 
     struct stat st;
+    int x;
 
     for(int i=1;i<argc;i++)
     {
         printf("Input name: %s\n", argv[i]);
-        stat(argv[i], &st);
+        x = lstat(argv[i], &st);
 
         pid1=fork();
         if(pid1==0)
@@ -284,7 +334,7 @@ int main(int argc, char* argv[])
                 case __S_IFLNK:
                 {
                     //printf("Input type: Symbolic link\n");
-                    chmod(argv[i],760);
+                    chmod(argv[i],0760);
                     break;
                 }
 
@@ -314,7 +364,7 @@ int main(int argc, char* argv[])
 
                 case __S_IFLNK:
                     printf("Input type: Symbolic link\n");
-                    //menuSymLink(argv[i]);
+                    menuSymLink(argv[i]);
                     break;
                 
                 default:
