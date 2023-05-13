@@ -4,6 +4,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <dirent.h>
 
 void accRights(unsigned short mode)
 {
@@ -122,6 +123,32 @@ void menuFile(char *input)
     }
 }
 
+int countCFiles(char* dir_path)
+{
+    int files=0;
+    char *c;
+    struct dirent *entry;
+    DIR *dir = opendir(dir_path);
+    if (dir == NULL) {
+            printf ("Error opening directory or '%s' doesn't exist\n", dir_path);
+            exit(1);
+        }
+        else
+    //printf("succesfully opened\n");
+
+    while( (entry=readdir(dir)) )
+    {
+        if(strstr(entry->d_name,".c"))
+        {
+            printf("%s\n", entry->d_name);
+            files++;
+        }
+    }
+
+    closedir(dir);
+    return files;
+}
+
 void menuDir(char* input)
 {
     char *options = malloc(10*sizeof(char));
@@ -152,7 +179,7 @@ void menuDir(char* input)
             break;
 
         case 'c':
-            printf("working on .c file count\n");
+            printf("Nr of files with .c extension: %d\n", countCFiles(input));
             break;
 
         default:
