@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 void accRights(unsigned short mode)
 {
@@ -47,7 +48,24 @@ void accRights(unsigned short mode)
         printf("Exec - yes\n\n");
         else
             printf("Exec - no\n\n");
+}
+
+void createSymLink(char *file_path)
+{
+    char link[20];
+    printf("Please input the name of the symbolic link file: ");
+    scanf("%s",link);
+    //printf("%s",symName);
+
+    if(!symlink(file_path, link)){
+        printf("Symbolic link created successfuly\n");
     }
+    else
+    {
+        printf("Error creating symbolic link or '%s' already exists\n", link);
+        exit(1);
+    }
+}
 
 void menuFile(char *input)
 {
@@ -87,7 +105,8 @@ void menuFile(char *input)
             break;
 
         case 'l':
-            printf("working on symlink\n");
+            printf("Create symbolic link:\n");
+            createSymLink(input);
             break;
 
         default:
