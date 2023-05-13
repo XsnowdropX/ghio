@@ -4,6 +4,51 @@
 #include <string.h>
 #include <fcntl.h>
 
+void accRights(unsigned short mode)
+{
+    printf("User:\n\n");
+    if(mode & S_IRUSR)
+        printf("Read - yes\n");
+        else
+            printf("Read - no\n");
+    if(mode & S_IWUSR)
+        printf("Write - yes\n");
+        else
+            printf("Write - no\n");
+    if(mode & S_IXUSR)
+        printf("Exec - yes\n\n");
+        else
+            printf("Exec - no\n\n");
+    
+    printf("Group:\n\n");
+    if(mode & S_IRGRP)
+        printf("Read - yes\n");
+        else
+            printf("Read - no\n");
+    if(mode & S_IWGRP)
+        printf("Write - yes\n");
+        else
+            printf("Write - no\n");
+    if(mode & S_IXGRP)
+        printf("Exec - yes\n\n");
+        else
+            printf("Exec - no\n\n");
+    
+    printf("Others:\n\n");
+    if(mode & S_IROTH)
+        printf("Read - yes\n");
+        else
+            printf("Read - no\n");
+    if(mode & S_IWOTH)
+        printf("Write - yes\n");
+        else
+            printf("Write - no\n");
+    if(mode & S_IXOTH)
+        printf("Exec - yes\n\n");
+        else
+            printf("Exec - no\n\n");
+    }
+
 void menuFile(char *input)
 {
     char *options = malloc(10*sizeof(char));
@@ -37,7 +82,8 @@ void menuFile(char *input)
             break;
         
         case 'a':
-            printf("working on acces rights\n");
+            printf("Access rights:\n");
+            accRights(st.st_mode);
             break;
 
         case 'l':
