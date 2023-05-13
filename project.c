@@ -141,7 +141,7 @@ int countCFiles(char* dir_path)
     {
         if(strstr(entry->d_name,".c"))
         {
-            printf("%s\n", entry->d_name);
+            //printf("%s\n", entry->d_name);
             files++;
         }
     }
@@ -196,6 +196,17 @@ void menuDir(char* input)
     }
 }
 
+void deleteSymLink(char* link_path)
+{
+    if(!unlink(link_path))
+    {
+        printf("Error deleting symbolic link\n");
+        exit(1);
+    }
+
+    printf("The symbolic link '%s' was succesfully deleted\n", link_path);
+}
+
 void menuSymLink(char* input)
 {
     char *options = malloc(10*sizeof(char));
@@ -218,7 +229,7 @@ void menuSymLink(char* input)
             break;
 
         case 'l':
-            printf("working on delete link function\n");
+            deleteSymLink(input);
             break;
 
         case 'd':
@@ -226,7 +237,7 @@ void menuSymLink(char* input)
             break;
 
         case 't':
-            printf("working on target file function\n");
+            printf("Size of target file: %lld bytes\n", (long long)st.st_size);
             break;
         
         case 'a':
@@ -312,7 +323,7 @@ int main(int argc, char* argv[])
             {
                 case __S_IFREG:
                 {
-                    //printf("Input type: Regular file\n");
+                    printf("Input type: Regular file\n");
                     if(strstr(argv[i],".c"))
                     {
                         system("sh script.sh");
@@ -326,14 +337,14 @@ int main(int argc, char* argv[])
 
                 case __S_IFDIR:
                 {
-                    //printf("Input type: Directory\n");
+                    printf("Input type: Directory\n");
                     createFile(argv[i]);
                     break;
                 }
 
                 case __S_IFLNK:
                 {
-                    //printf("Input type: Symbolic link\n");
+                    printf("Input type: Symbolic link\n");
                     chmod(argv[i],0760);
                     break;
                 }
@@ -353,22 +364,22 @@ int main(int argc, char* argv[])
             switch (st.st_mode & __S_IFMT)
             {
                 case __S_IFREG:
-                    printf("Input type: Regular file\n");
+                    //printf("Input type: Regular file\n");
                     menuFile(argv[i]);
                     break;
 
                 case __S_IFDIR:
-                    printf("Input type: Directory\n");
+                    //printf("Input type: Directory\n");
                     menuDir(argv[i]);
                     break;
 
                 case __S_IFLNK:
-                    printf("Input type: Symbolic link\n");
+                    //printf("Input type: Symbolic link\n");
                     menuSymLink(argv[i]);
                     break;
                 
                 default:
-                printf("Wrong input format or '%s' doesn't exist\n", argv[i]);
+                //printf("Wrong input format or '%s' doesn't exist\n", argv[i]);
                     break;
             }
             exit(0);
@@ -379,10 +390,10 @@ int main(int argc, char* argv[])
 
     int status1 = waitpid(pid1, &status1, 0);
     int es1 = WEXITSTATUS(status1);
-    //printf("The process with PID %d has ended with the exit code %d\n", pid1, es1);
+    printf("The process with PID %d has ended with the exit code %d\n", pid1, es1);
     int status2 = waitpid(pid2, &status2, 0);
     int es2 = WEXITSTATUS(status2);
-    //printf("The process with PID %d has ended with the exit code %d\n", pid2, es2);
+    printf("The process with PID %d has ended with the exit code %d\n", pid2, es2);
 
     return 0;
 }
